@@ -1,6 +1,6 @@
 var clickedOverlay = null;
 // 지도에 마커를 표시하고 오버레이를 만들고 창을 닫는 이벤트를 등록하는 함수
-function displayMarker(parsedData) {
+function displayMarker(parsedData, path) {
 	// 지도에 마커를 표시
 	var marker = new kakao.maps.Marker({
 		position: new kakao.maps.LatLng(parsedData.lot,
@@ -31,7 +31,7 @@ function displayMarker(parsedData) {
 	linkInput.value = parsedData.rsrcNo;
 	linkInput.name = 'no';
 
-	linkForm.setAttribute('action', '/detail?no=' + parsedData.rsrcNo);
+	linkForm.setAttribute('action', path + '/Calendar2?no=' + parsedData.rsrcNo);
 
 	var bookBtn = document.createElement('button');
 	bookBtn.innerHTML = '예약하기';

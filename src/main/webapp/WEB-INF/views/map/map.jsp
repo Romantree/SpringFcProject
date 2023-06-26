@@ -42,6 +42,7 @@
 	<script type="text/javascript">
 	var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
 	var originalList = '${parsedList}';
+	var path = '${path}';
 	var parsedList = JSON.parse(originalList);
 	var markers = [];
 
@@ -71,7 +72,7 @@
 	});
 	
 	for (let i = 0; i < parsedList.length; i++) {
-		displayMarker(parsedList[i]);
+		displayMarker(parsedList[i], path);
 	}	
 	</script>
 </body>

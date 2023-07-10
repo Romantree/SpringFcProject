@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>     
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>  
+
 <c:set var="path" value="${pageContext.request.contextPath}"></c:set>
 <%
  response.setHeader("Cache-Control","no-store");
@@ -49,16 +50,8 @@ rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGL
 	</c:if>
 
 
+				<%@ include file="../header.jsp"%>
 
-	<div id= "header">	
-	
-	<div id="header-top">
-	 header top
-	</div>			
-	<div id= "header-bottom">
-		 header bottm
-		 </div>
-	</div>
 	
 <div class="wrap">
 	
@@ -161,12 +154,11 @@ rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGL
 	  </form>  
 
 
-		
-	  <div id="footer">
-	 	<h2>임시 dddfooter</h2> 
-	  </div>
+	
 	  
 </div>
+ 				<%@ include file="../footer.jsp"%>
+ 
 <script>
 
 

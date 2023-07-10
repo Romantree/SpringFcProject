@@ -4,6 +4,9 @@ package com.fc.controller.board;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
@@ -17,7 +20,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,6 +41,16 @@ public class BoardController {
 	@Autowired
 	ReplyService replyService;
 
+	
+	@GetMapping("/test")
+	public String test() {
+		
+		return "board/test";
+	}
+	
+	
+	
+	
 	// 게시글 작성
 	@GetMapping("/write")
 	public String insertContents() {
@@ -63,6 +75,7 @@ public class BoardController {
 	public String boardList(Model model, @RequestParam (defaultValue = "1") int pageNo, @ModelAttribute SearchDto searchObj) {
 		// public String boardList(Model model, @RequestParam(name = "postNo", required
 		// = false) String postNo, @ModelAttribute SearchDto searchObj) {
+		
 		List<BoardDto> boardList = new ArrayList<BoardDto>();
 		System.out.println(searchObj.toString());
 		int totalPage = 0;
@@ -119,20 +132,42 @@ public class BoardController {
 	
 	// 게시판 상세보기 페이지
 	@GetMapping("/detail")
-	public String getdetail(@RequestParam("postno") int postno, Model model) {
-
-		List<ReplyDto> list = replyService.list(postno);
-
-		model.addAttribute("list", list);
-
-		model.addAttribute("viewPage", boardService.getdetail(postno));
-
-		BoardDto dto = boardService.getdetail(postno);
-		boardService.viewCount(postno);
-
-		return "board/viewPage";
+	public String getdetail(@RequestParam("postno") int postno, HttpServletRequest request, HttpServletResponse response, Model model) {
+	    // 쿠키 이름
+	    String cookieName = "viewedPost_" + postno;
+	    
+	    // 쿠키 가져오기
+	    Cookie[] cookies = request.getCookies();
+	    boolean isViewed = false;
+	    if (cookies != null) {
+	        for (Cookie cookie : cookies) {
+	            if (cookie.getName().equals(cookieName)) {
+	                isViewed = true;
+	                break;
+	            }
+	        }
+	    }
+	    
+	    if (!isViewed) {
+	        // 조회수 증가
+	        boardService.viewCount(postno);
+	        
+	        // 쿠키 설정 (30분 유지)
+	        Cookie viewedCookie = new Cookie(cookieName, "true");
+	        viewedCookie.setMaxAge(30 * 60);
+	        viewedCookie.setPath("/");
+	        response.addCookie(viewedCookie);
+	    }
+	    
+	    List<ReplyDto> list = replyService.list(postno);
+	    model.addAttribute("list", list);
+	    
+	    model.addAttribute("viewPage", boardService.getdetail(postno));
+	    
+	    return "board/viewPage";
 	}
 
+	
 	// 신고 or 추천
 	// 기존에 신고한적이 있는지 결과값을 리턴받아서 ajax로 전달..
 	@ResponseBody
@@ -145,7 +180,7 @@ public class BoardController {
 		int result = boardService.controlBoardInfo(commonInfo);
 		return result;
 	}
-
+	
 	// 게시글 수정
 	@GetMapping("/update")
 	public String updateView(BoardDto boardDto, Model model) {

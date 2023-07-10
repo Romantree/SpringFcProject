@@ -25,7 +25,7 @@ public interface BoardService {
  
 	List<BoardDto> findBoardListBySearchDto(SearchDto searchDto);
 
-	void viewCount(int postno);
+	void viewCount(int postno );
 
 	public BoardDto getdetail(int postno);
 
